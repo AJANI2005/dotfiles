@@ -5,15 +5,22 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
 
-// Wallpaper carousel switcher. A component of the main shell (shell.qml).
-// Simplified from AJANI2005/archdots: recursive scan of ~/wallpapers grouped
-// into folders (Left/Right skim the folder, Up/Down switch folders),
-// single `toggle` IPC.
+// Carousel wallpaper switcher modelled on omarchy's full-screen image picker.
+// Standalone: no omarchy runtime, palette, or config files required.
 //
-// Toggle it:
-//   qs ipc call wallpapers toggle
-
-Item {
+// Launch it with:
+//   qs -n -d -p "$HOME/.config/quickshell/wallpapers/shell.qml"
+//
+// IPC (quickshell's own ipc):
+//   qs -p "$HOME/.config/quickshell/wallpapers/shell.qml" ipc call wallpapers toggle
+//   qs -p "$HOME/.config/quickshell/wallpapers/shell.qml" ipc call wallpapers next
+//   qs -p "$HOME/.config/quickshell/wallpapers/shell.qml" ipc call wallpapers prev
+//   qs -p "$HOME/.config/quickshell/wallpapers/shell.qml" ipc call wallpapers pick 3
+//   qs -p "$HOME/.config/quickshell/wallpapers/shell.qml" ipc call wallpapers apply
+//
+// Enter / click on the focused card applies the wallpaper via awww (the
+// machine's wallpaper setter): `awww img -t random --transition-fps 144 -- <file>`.
+ShellRoot {
     id: root
 
     // ---- theme ----
@@ -62,7 +69,7 @@ Item {
     function currentLabel() {
         return labelForPath(root.currentPath());
     }
-    function currentDirLabel() {
+    function currentFolderLabel() {
         if (root.folders.length === 0) return "";
         var dir = root.folders[root.currentDirIndex] || "";
         if (dir.indexOf(root.wallDir) === 0) return "~/wallpapers" + dir.substring(root.wallDir.length);
@@ -79,6 +86,20 @@ Item {
     function selectAdjacent(direction) {
         root.select(root.selectedIndex + direction);
     }
+    function folderStep(direction) {
+        if (root.folders.length === 0) return;
+        var n = root.folders.length;
+        root.currentDirIndex = (root.currentDirIndex + direction + n) % n;
+        root.refold();
+        root.selectedIndex = 0;
+    }
+    function openFolderByPath(dir) {
+        var idx = root.folders.indexOf(dir);
+        if (idx >= 0) {
+            root.currentDirIndex = idx;
+            root.refold();
+        }
+    }
     function refold() {
         var dir = root.folders.length > 0 ? root.folders[root.currentDirIndex] : "";
         var list = [];
@@ -88,20 +109,6 @@ Item {
         root.folderImages = list;
         if (root.selectedIndex >= list.length) root.selectedIndex = list.length - 1;
         if (root.selectedIndex < 0) root.selectedIndex = 0;
-    }
-    function openFolderByPath(dir) {
-        var idx = root.folders.indexOf(dir);
-        if (idx >= 0) {
-            root.currentDirIndex = idx;
-            root.refold();
-        }
-    }
-    function folderStep(direction) {
-        if (root.folders.length === 0) return;
-        var n = root.folders.length;
-        root.currentDirIndex = (root.currentDirIndex + direction + n) % n;
-        root.refold();
-        root.selectedIndex = 0;
     }
 
     function startAutoselect() {
@@ -143,7 +150,12 @@ Item {
         if (root.opened) return;
         root.opened = true;
         root.layoutSettled = false;
-        if (root.imagesLoaded) root.startAutoselect();
+        if (!root.imagesLoaded) {
+            listProc.running = false;
+            listProc.running = true;
+        } else {
+            root.startAutoselect();
+        }
     }
     function cancel() {
         if (!root.opened) return;
@@ -164,17 +176,25 @@ Item {
         });
     }
 
-    function loadImages(text) {
+    function loadRows(text) {
         var images = [];
+        var seen = {};
         var lines = String(text || "").split("\n");
         for (var i = 0; i < lines.length; i++) {
-            var p = lines[i];
-            if (!p) continue;
-            var slash = p.lastIndexOf("/");
+            var row = lines[i];
+            if (!row) continue;
+            var cols = row.split("\t");
+            var path = cols[0];
+            if (!path) continue;
+            var name = path.split("/").pop();
+            if (seen[name]) continue;
+            seen[name] = true;
+            var slash = path.lastIndexOf("/");
             images.push({
-                filePath: p,
-                fileName: p.split("/").pop(),
-                dir: slash > 0 ? p.substring(0, slash) : "/"
+                filePath: path,
+                fileName: name,
+                thumbnailPath: cols[1] || path,
+                dir: slash > 0 ? path.substring(0, slash) : "/"
             });
         }
         root.imageArray = images;
@@ -185,9 +205,9 @@ Item {
         dirs.sort();
         root.folders = dirs;
         if (root.currentDirIndex >= dirs.length) root.currentDirIndex = 0;
+        root.refold();
         root.selectedIndex = 0;
         root.layoutSettled = false;
-        root.refold();
         root.imagesLoaded = true;
         if (root.opened) root.startAutoselect();
     }
@@ -200,7 +220,7 @@ Item {
         applyProc.running = true;
     }
 
-    // ---- listing (absolute paths, one per line) ----
+    // ---- listing (absolute paths, one per line: path<TAB>thumb) ----
     Process {
         id: listProc
         running: true
@@ -209,10 +229,11 @@ Item {
             + "find -L \"$D\" -type f "
             + "\\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o "
             + "-iname '*.gif' -o -iname '*.bmp' -o -iname '*.webp' \\) "
-            + "-print 2>/dev/null | sort"]
+            + "-print0 2>/dev/null | sort -z | "
+            + "while IFS= read -r -d '' f; do printf '%s\\t%s\\n' \"$f\" \"$f\"; done"]
         stdout: StdioCollector {
             waitForEnd: true
-            onStreamFinished: root.loadImages(text || "")
+            onStreamFinished: root.loadRows(text || "")
         }
     }
 
@@ -246,7 +267,17 @@ Item {
     // ---- IPC ----
     IpcHandler {
         target: "wallpapers"
-        function toggle(): void { root.toggle(); }
+        function show(): void          { root.open(); }
+        function hide(): void          { root.cancel(); }
+        function toggle(): void        { root.toggle(); }
+        function next(): void          { root.selectAdjacent(1); }
+        function prev(): void          { root.selectAdjacent(-1); }
+        function pick(i: int): void    { root.select(i, true); }
+        function apply(): void         { root.applySelected(); }
+        function count(): int          { return root.folderImages.length; }
+        function filename(): string    {
+            return root.folderImages.length > 0 ? root.folderImages[root.selectedIndex].fileName : "";
+        }
     }
 
     // ---- surface ----
@@ -267,7 +298,7 @@ Item {
             onClicked: root.cancel()
         }
 
-        // Empty state when the scan finds nothing.
+        // Empty state (visible for diagnostics when the scan finds nothing).
         Text {
             anchors.centerIn: parent
             visible: root.opened && root.imagesLoaded && root.imageArray.length === 0
@@ -292,7 +323,7 @@ Item {
                 anchors.top: parent.top
                 anchors.topMargin: 4
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: root.currentDirLabel()
+                text: root.currentFolderLabel()
                 color: root.alpha(root.foreground, 0.9)
                 style: Text.Outline
                 styleColor: root.alpha(root.dimColor, 0.7)
@@ -354,6 +385,7 @@ Item {
 
                         readonly property var imageData: root.folderImages[index]
                         readonly property string filePath: imageData ? imageData.filePath : ""
+                        readonly property string thumbnailPath: imageData ? imageData.thumbnailPath : ""
 
                         readonly property bool selected: index === root.selectedIndex
                         readonly property int relativeIndex: index - root.selectedIndex
@@ -414,7 +446,7 @@ Item {
                             Image {
                                 id: image
                                 anchors.fill: parent
-                                source: item.sourceActivated && item.filePath ? root.fileUrl(item.filePath) : ""
+                                source: item.sourceActivated && item.thumbnailPath ? root.fileUrl(item.thumbnailPath) : ""
                                 fillMode: Image.PreserveAspectCrop
                                 asynchronous: true
                                 sourceSize: Qt.size(1200, 900)
