@@ -1,0 +1,5 @@
+FROM cgr.dev/chainguard/wolfi-base
+
+RUN apk add --no-cache nodejs npm bash
+RUN npm install -g opencode-ai --allow-scripts=opencode-ai
+ENTRYPOINT ["npx","opencode"]
