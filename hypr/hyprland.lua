@@ -6,17 +6,16 @@ local launcher="vicinae toggle"
 local screenshot_region="grim -g \"$(slurp)\" - | swappy -f -"
 local screenshot_full="grim - | swappy -f -"
 
+-- imports
+
 hl.monitor({ output="eDP-1", mode="1920x1080@144", position="auto", scale="1" })
 hl.config({
-	general={ gaps_in=5, gaps_out=2, resize_on_border=true },
-	animations={ enabled=false } ,
+	general={ gaps_in=5, gaps_out=5, resize_on_border=true, border_size=2, col={ active_border="rgba(333333ee)", inactive_border="rgba(333333aa)" } },
+	animations={ enabled=false },
 	dwindle={ preserve_split = true },
 	misc={ force_default_wallpaper = -1, disable_hyprland_logo = true, disable_splash_rendering=true },
 	input={ touchpad={ natural_scroll=true } },
-    -- decoration = {
-    --     blur = { enabled = true, size = 5, passes = 4, new_optimizations = true, noise = 0.0117, contrast = 0.8916, brightness = 0.8172, vibrancy = 0.1696, },
-    -- },
-
+	decoration={ rounding=10 },
 })
 hl.env("LIBVA_DRIVER_NAME","nvidia")
 hl.env("__GLX_VENDOR_LIBRARY_NAME","nvidia")
@@ -25,22 +24,27 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("vicinae server")
     hl.exec_cmd("quickshell")
     hl.exec_cmd("awww-daemon")
+    hl.exec_cmd("hypridle")
 end)
 
 
 local mainMod="SUPER"
 
 -- Programs
+
 hl.bind(mainMod .. "+ Return",hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + B",hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + E",hl.dsp.exec_cmd(files))
 hl.bind(mainMod .. " + Space",hl.dsp.exec_cmd(launcher))
 hl.bind(mainMod .. " + SHIFT + M",hl.dsp.exit())
 hl.bind(mainMod .. " + S",hl.dsp.exec_cmd(screenshot_region))
+hl.bind(mainMod .. " + SHIFT + escape", hl.dsp.exec_cmd("pidof hyprlock || /home/ajani/.config/hypr/lockwall.sh"))
 hl.bind(mainMod .. " + SHIFT + S",hl.dsp.exec_cmd(screenshot_full))
 
+hl.bind(mainMod .. " + CTRL + SHIFT + W", hl.dsp.exec_cmd([[p=$(find "$HOME"/wallpapers -type f \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | shuf -n1) && awww img --transition-fps 144 --transition-type random "$p"]]))
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("qs ipc call wallpapers toggle"))
 
-hl.bind(mainMod .. " + SHIFT + W",hl.dsp.exec_cmd("qs ipc call wallpapers toggle"))
+
 hl.bind(mainMod .. " + A",hl.dsp.exec_cmd("vicinae vicinae://launch/applications"))
 hl.bind(mainMod .. " + C",hl.dsp.exec_cmd("vicinae vicinae://launch/clipboard/history"))
 

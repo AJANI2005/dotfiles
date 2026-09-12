@@ -1,122 +1,117 @@
-import Quickshell
 import QtQuick
-import "components"
+import QtQuick.Layouts
+import Quickshell
+import Quickshell.Hyprland
 
-Scope {
-    Variants {
-        model: Quickshell.screens
+ShellRoot {
+    id: root
 
-        PanelWindow {
-            required property var modelData
-            screen: modelData
+    // ---- dark grayscale palette ----
+    readonly property color bg: '#0d0d0d'
+    readonly property color fg: '#e6e6e6'
+    readonly property color dim: '#5c5c5c'
 
-            anchors { top: true; left: true; right: true }
-            implicitWidth: 2000
-            implicitHeight: 44
-            exclusiveZone: 0
-            color: "transparent"
-
-            Command {
-                id: cursor
-                command: ["sh", "-c", "hyprctl cursorpos"]
-                parser: data => {
-                    const [x, y] = data.trim().split(",").map(v => parseInt(v, 10))
-                    return { x: x, y: y }
-                }
-                interval: 50
-            }
-
-            Rectangle {
-                id: leftBox
-                y: 0
-                width: 220
-                height: parent.height
-                color: "transparent"
-                anchors.left: parent.left
-            }
-
-            Rectangle {
-                id: rightBox
-                y: 0
-                width: 120
-                height: parent.height
-                color: "transparent"
-                anchors.right: parent.right
-            }
-
-            WorkspacesPill {
-                id: pill
-                x: dodge.pill ? leftBox.width + 12 : 10
-                y: 2
-
-                Behavior on x {
-                    NumberAnimation {
-                        duration: 200
-                        easing.type: Easing.OutCubic
-                    }
-                }
-            }
-
-            ClockPill {
-                id: clock
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: 2
-                anchors.rightMargin: dodge.clock ? rightBox.width + 12 : 10
-
-                Behavior on anchors.rightMargin {
-                    NumberAnimation {
-                        duration: 200
-                        easing.type: Easing.OutCubic
-                    }
-                }
-            }
-
-            QtObject {
-                id: dodge
-                property bool pill: {
-                    const lx = (cursor.value?.x ?? 0) - modelData.x
-                    const ly = (cursor.value?.y ?? 0) - modelData.y
-                    return lx >= leftBox.x && lx <= leftBox.x + leftBox.width &&
-                           ly >= leftBox.y && ly <= leftBox.y + leftBox.height
-                }
-                property bool clock: {
-                    const lx = (cursor.value?.x ?? 0) - modelData.x
-                    const ly = (cursor.value?.y ?? 0) - modelData.y
-                    return lx >= rightBox.x && lx <= rightBox.x + rightBox.width &&
-                           ly >= rightBox.y && ly <= rightBox.y + rightBox.height
-                }
-            }
-
-            mask: Region {
-                Region { item: pill }
-                Region { item: clock }
-            }
+    function workspace(id) {
+        const list = Hyprland.workspaces.values
+        for (const w of list) {
+            if (w.id === id) return w
         }
+        return null
     }
 
-    Variants {
-        model: Quickshell.screens
+    // Wallpaper Switcher
+    WallpaperSwitcher{}
 
-        PanelWindow {
-            required property var modelData
-            id: statsWindow
-            screen: modelData
+    // Bar
+    PanelWindow {
+        id: bar
+        anchors {
+            bottom: true
+            left: true
+            right: true
+        }
+        height: 14
+        color: "#cc0d0d0d"
 
-            anchors { top: true; left: true; right: true }
-            height: statsPanel.height
-            exclusiveZone: 0
-            color: "transparent"
+        RowLayout {
+            anchors.fill: parent
+            spacing: 0
 
-            mask: Region {
-                Region { item: statsPanel.sensor }
-                Region { item: statsPanel.body }
+            Row {
+                spacing: 0
+
+                Repeater {
+                    model: 9
+
+                    Rectangle {
+                        required property int index
+                        readonly property int wsId: index + 1
+                        readonly property var wsObj: root.workspace(wsId)
+                        readonly property bool isFocused: wsObj !== null && wsObj.focused
+                        readonly property bool isOccupied: wsObj !== null && wsObj.toplevels.count > 0
+
+                        width: 18
+                        height: 14
+                        color: "transparent"
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: parent.wsId
+                            color: parent.isFocused ? root.fg : root.dim
+                            font.pixelSize: 10
+                            font.bold: parent.isFocused
+                            font.family: "monospace"
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: Hyprland.dispatch("workspace " + parent.wsId)
+                        }
+                    }
+                }
             }
 
-            StatsPanel {
-                id: statsPanel
-                anchors.horizontalCenter: parent.horizontalCenter
-                window: statsWindow
+            Item {
+                Layout.fillWidth: true
+                height: 14
+            }
+
+            Rectangle {
+                height: 14
+                implicitWidth: dateText.implicitWidth + timeText.implicitWidth + 8
+                color: "transparent"
+
+                Row {
+                    id: clockRow
+                    anchors.centerIn: parent
+                    spacing: 6
+
+                    Text {
+                        id: dateText
+                        color: root.dim
+                        font.pixelSize: 11
+                        font.family: "monospace"
+                    }
+
+                    Text {
+                        id: timeText
+                        color: root.fg
+                        font.pixelSize: 11
+                        font.family: "monospace"
+                    }
+                }
+
+                Timer {
+                    interval: 1000
+                    running: true
+                    repeat: true
+                    triggeredOnStart: true
+                    onTriggered: {
+                        let d = new Date()
+                        dateText.text = Qt.formatDateTime(d, "yyyy-MM-dd")
+                        timeText.text = Qt.formatDateTime(d, "h:mm:ss AP")
+                    }
+                }
             }
         }
     }

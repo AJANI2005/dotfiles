@@ -1,7 +1,0 @@
-module components
-Command Command.qml
-ClockPill ClockPill.qml
-StatsPanel StatsPanel.qml
-StatRow StatRow.qml
-Tray Tray.qml
-WorkspacesPill WorkspacesPill.qml

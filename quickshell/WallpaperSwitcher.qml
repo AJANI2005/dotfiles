@@ -6,21 +6,20 @@ import Quickshell.Wayland
 import Quickshell.Io
 
 // Carousel wallpaper switcher modelled on omarchy's full-screen image picker.
-// Standalone: no omarchy runtime, palette, or config files required.
+// No omarchy runtime, palette, or config files required.
 //
-// Launch it with:
-//   qs -n -d -p "$HOME/.config/quickshell/wallpapers/shell.qml"
+// Component of shell.qml — instantiated by the main shell entry point.
 //
 // IPC (quickshell's own ipc):
-//   qs -p "$HOME/.config/quickshell/wallpapers/shell.qml" ipc call wallpapers toggle
-//   qs -p "$HOME/.config/quickshell/wallpapers/shell.qml" ipc call wallpapers next
-//   qs -p "$HOME/.config/quickshell/wallpapers/shell.qml" ipc call wallpapers prev
-//   qs -p "$HOME/.config/quickshell/wallpapers/shell.qml" ipc call wallpapers pick 3
-//   qs -p "$HOME/.config/quickshell/wallpapers/shell.qml" ipc call wallpapers apply
+//   qs ipc call wallpapers toggle
+//   qs ipc call wallpapers next
+//   qs ipc call wallpapers prev
+//   qs ipc call wallpapers pick 3
+//   qs ipc call wallpapers apply
 //
 // Enter / click on the focused card applies the wallpaper via awww (the
 // machine's wallpaper setter): `awww img -t random --transition-fps 144 -- <file>`.
-ShellRoot {
+Item {
     id: root
 
     // ---- theme ----
@@ -394,6 +393,10 @@ ShellRoot {
                         onNearbyChanged: if (nearby) sourceActivated = true
 
                         visible: nearby
+                        opacity: image.status === Image.Ready ? 1 : 0
+                        Behavior on opacity {
+                            NumberAnimation { duration: 400; easing.type: Easing.OutCubic }
+                        }
                         x: selected ? carousel.previewX
                            : (relativeIndex < 0
                                 ? carousel.previewX + relativeIndex * carousel.itemStep
