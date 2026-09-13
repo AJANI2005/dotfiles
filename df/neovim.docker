@@ -1,0 +1,19 @@
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+RUN apk add --no-cache \
+    neovim \
+    fzf \
+    ripgrep \
+    nodejs \
+    npm \
+    curl \
+    git
+
+ENV EDITOR=nvim
+ENV VISUAL=nvim
+
+COPY nvim /root/.config/nvim
+
+WORKDIR /workspace
+
+ENTRYPOINT ["nvim"]

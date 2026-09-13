@@ -15,8 +15,15 @@ hl.config({
 	dwindle={ preserve_split = true },
 	misc={ force_default_wallpaper = -1, disable_hyprland_logo = true, disable_splash_rendering=true },
 	input={ touchpad={ natural_scroll=true } },
-	decoration={ rounding=10 },
+    decoration={ rounding = 10,
+        blur={
+            enabled = true,
+            size =  6,
+            passes = 2
+        }
+    }
 })
+
 hl.env("LIBVA_DRIVER_NAME","nvidia")
 hl.env("__GLX_VENDOR_LIBRARY_NAME","nvidia")
 
@@ -158,3 +165,16 @@ hl.window_rule({
     size = { 400, 400 },
 })
 
+hl.window_rule({
+    name = "no-blur",
+    match = { class = "^(?!foot)$.*", },
+    no_blur=true,
+})
+
+hl.window_rule({
+    name = "foot-transparency",
+    match = {
+        class = "^(foot)$",
+    },
+    opacity = "0.80 override 0.80 override",
+})
