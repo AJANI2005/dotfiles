@@ -27,6 +27,7 @@ Item {
     readonly property color dimColor: "#16140f"
     readonly property color selectedBorder: "#e87962"
     readonly property color unselectedBorder: "#403d38"
+    readonly property string fontFamily: "JetBrainsMono Nerd Font"
 
     readonly property string wallDir: Quickshell.env("HOME") + "/wallpapers"
 
@@ -303,7 +304,7 @@ Item {
             visible: root.opened && root.imagesLoaded && root.imageArray.length === 0
             text: "no wallpapers in " + root.wallDir
             color: root.alpha(root.foreground, 0.55)
-            font.family: "JetBrainsMono Nerd Font"
+            font.family: root.fontFamily
             font.pixelSize: 16
         }
 
@@ -326,9 +327,10 @@ Item {
                 color: root.alpha(root.foreground, 0.9)
                 style: Text.Outline
                 styleColor: root.alpha(root.dimColor, 0.7)
-                font.family: "JetBrainsMono Nerd Font"
+                font.family: root.fontFamily
                 font.pixelSize: 13
                 font.weight: Font.Medium
+                font.letterSpacing: 0.5
             }
 
             Item {
@@ -406,6 +408,19 @@ Item {
                         height: selected ? root.expandedHeight : root.sliceHeight
                         y: selected ? 0 : (root.expandedHeight - root.sliceHeight) / 2
                         z: selected ? 100 : 50 - Math.min(Math.abs(relativeIndex), 40)
+
+                        Behavior on x {
+                            NumberAnimation { duration: 320; easing.type: Easing.OutCubic }
+                        }
+                        Behavior on y {
+                            NumberAnimation { duration: 320; easing.type: Easing.OutCubic }
+                        }
+                        Behavior on width {
+                            NumberAnimation { duration: 320; easing.type: Easing.OutCubic }
+                        }
+                        Behavior on height {
+                            NumberAnimation { duration: 320; easing.type: Easing.OutCubic }
+                        }
 
                         readonly property real skAbs: Math.abs(root.skewOffset)
                         readonly property real topLeft: root.skewOffset >= 0 ? skAbs : 0
@@ -501,8 +516,10 @@ Item {
                 color: root.foreground
                 style: Text.Outline
                 styleColor: root.alpha(root.dimColor, 0.7)
+                font.family: root.fontFamily
                 font.pixelSize: 15
                 font.weight: Font.DemiBold
+                font.letterSpacing: 0.5
                 horizontalAlignment: Text.AlignHCenter
                 elide: Text.ElideRight
             }
