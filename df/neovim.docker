@@ -1,13 +1,17 @@
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM archlinux:latest
 
-RUN apk add --no-cache \
+RUN pacman -Syu --noconfirm \
     neovim \
     fzf \
     ripgrep \
     nodejs \
     npm \
     curl \
-    git
+    git \
+    wget \
+    wl-clipboard \
+    ca-certificates \
+    && pacman -Scc --noconfirm
 
 ENV EDITOR=nvim
 ENV VISUAL=nvim

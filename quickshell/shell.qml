@@ -4,7 +4,9 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Io
 import Quickshell.Services.SystemTray
+import Quickshell.Services.UPower
 
 ShellRoot {
     id: root
@@ -14,6 +16,14 @@ ShellRoot {
     readonly property color fg: '#e6e6e6'
     readonly property color occupied: '#c0c0c0'
     readonly property color dim: '#5c5c5c'
+    property int updateCount: 0
+
+    function batteryColor(pct, charging) {
+        if (charging) return root.fg
+        if (pct >= 60) return root.fg
+        if (pct >= 30) return root.occupied
+        return root.dim
+    }
 
     function workspace(id) {
         const list = Hyprland.workspaces.values
@@ -86,13 +96,74 @@ ShellRoot {
 
             Rectangle {
                 height: 14
-                implicitWidth: dateText.implicitWidth + timeText.implicitWidth + 8
+                implicitWidth: updateText.implicitWidth + batteryCell.width + dateText.implicitWidth + timeText.implicitWidth + 36
                 color: "transparent"
 
                 Row {
                     id: clockRow
                     anchors.centerIn: parent
-                    spacing: 6
+                    spacing: 12
+
+                    Text {
+                        id: updateText
+                        text: "▲ " + root.updateCount + " updates"
+                        color: root.updateCount > 0 ? root.fg : root.dim
+                        font.pixelSize: 10
+                        font.family: "monospace"
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                updateLaunch.startDetached()
+                                updateProc.running = true
+                            }
+                        }
+                    }
+
+                    Item {
+                        id: batteryCell
+                        readonly property bool batteryReady: UPower.displayDevice !== null
+                        readonly property bool isCharging: batteryReady
+                                                          && (UPower.displayDevice.state === UPowerDeviceState.Charging
+                                                          || UPower.displayDevice.state === UPowerDeviceState.FullyCharged)
+                        readonly property int pct: batteryReady ? Math.round(UPower.displayDevice.percentage * 100) : 0
+
+                        width: batteryRow.implicitWidth
+                        height: 14
+
+                        Row {
+                            id: batteryRow
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 2
+
+                            Row {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 2
+
+                                Repeater {
+                                    model: 10
+
+                                    Rectangle {
+                                        required property int index
+
+                                        width: 2
+                                        height: 8
+                                        color: index < Math.ceil(batteryCell.pct / 10)
+                                               ? root.batteryColor(batteryCell.pct, batteryCell.isCharging)
+                                               : root.dim
+                                    }
+                                }
+                            }
+
+                            Text {
+                                text: (batteryCell.isCharging ? "+" : "") + batteryCell.pct + "%"
+                                color: batteryCell.isCharging ? root.fg : root.dim
+                                font.pixelSize: 10
+                                font.family: "monospace"
+                            }
+                        }
+                    }
 
                     Text {
                         id: dateText
@@ -182,6 +253,31 @@ ShellRoot {
                     }
                 }
             }
+        }
+
+        Timer {
+            interval: 600000
+            running: true
+            repeat: true
+            triggeredOnStart: true
+            onTriggered: updateProc.running = true
+        }
+
+        Process {
+            id: updateProc
+            command: ["sh", "-c", "paru -Qu"]
+            stdout: StdioCollector {
+                id: updateCollector
+                onStreamFinished: {
+                    const t = updateCollector.text.trim()
+                    root.updateCount = t === "" ? 0 : t.split("\n").length
+                }
+            }
+        }
+
+        Process {
+            id: updateLaunch
+            command: ["sh", "-c", "foot --hold paru -Syu"]
         }
     }
 }

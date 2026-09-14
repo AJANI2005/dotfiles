@@ -43,8 +43,6 @@ vim.o.expandtab = true
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 vim.o.wrap = false
-vim.o.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.o.wildmenu = true
 vim.o.wildmode = "longest:full,full"
 vim.o.completeopt = "menu,menuone,noselect,popup"
@@ -540,13 +538,29 @@ require("lazy").setup({
 					-- tokens, which gopls drops by default.
 					settings = { gopls = { semanticTokens = true } },
 				})
+
+				-- pyright, ts_ls and bashls are installed by Mason (see the
+				-- mason-lspconfig spec below) and auto-enabled. lua_ls,
+				-- clangd, gopls and rust_analyzer cannot be installed by
+				-- Mason on this platform (Alpine/musl), so they come from the
+				-- container's package manager and are enabled here explicitly.
+				vim.lsp.enable({
+					"lua_ls",
+					"pyright",
+					"clangd",
+					"gopls",
+					"rust_analyzer",
+					"ts_ls",
+					"bashls",
+				})
 			end,
 		},
 
 		-- LSP server installation via Mason (codingbrush.com guide): Mason
 		-- downloads the language servers, and mason-lspconfig bridges Mason
-		-- and nvim-lspconfig. Servers in ensure_installed are installed
-		-- automatically and enabled once installed (automatic_enable).
+		-- and nvim-lspconfig. Only servers Mason can actually install on
+		-- this platform are listed here; the rest come from the container's
+		-- package manager and are enabled explicitly in nvim-lspconfig.
 		{
 			"mason-org/mason-lspconfig.nvim",
 			dependencies = {
@@ -567,11 +581,7 @@ require("lazy").setup({
 			opts = {
 				-- Servers placed here are installed automatically by Mason.
 				ensure_installed = {
-					"lua_ls", -- Lua
 					"pyright", -- Python
-					"clangd", -- C / C++
-					"gopls", -- Go
-					"rust_analyzer", -- Rust
 					"ts_ls", -- TypeScript / JavaScript
 					"bashls", -- Bash
 				},
