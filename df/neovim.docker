@@ -11,6 +11,9 @@ RUN pacman -Syu --noconfirm \
     wget \
     wl-clipboard \
     ca-certificates \
+    go \
+    unzip \
+    rust \
     && pacman -Scc --noconfirm
 
 ENV EDITOR=nvim
