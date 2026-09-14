@@ -175,5 +175,5 @@ hl.window_rule({
     match = {
         class = "^(foot)$",
     },
-    opacity = "0.80 override 0.80 override",
+    opacity = "0.85 override 0.85 override",
 })
