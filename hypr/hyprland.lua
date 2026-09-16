@@ -21,6 +21,13 @@ hl.config({
   }
 })
 
+hl.monitor({
+  output = "DP-1",
+  mode = "1920x1080@144",
+  position = "0x0",
+  scale = 1,
+})
+
 hl.env("LIBVA_DRIVER_NAME","nvidia")
 hl.env("__GLX_VENDOR_LIBRARY_NAME","nvidia")
 hl.env("XCURSOR_THEME","Breeze_Light")

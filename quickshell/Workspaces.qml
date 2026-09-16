@@ -10,6 +10,8 @@ Rectangle {
 
     color: Theme.bgColor
 
+    property bool hovered: false
+
     Word {
         anchors.centerIn: parent
 
