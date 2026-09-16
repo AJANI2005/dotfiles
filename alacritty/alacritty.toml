@@ -1,0 +1,47 @@
+[window]
+opacity = 0.8
+decorations = "Full"
+
+# [general]
+# import = [
+#     "~/.config/alacritty/themes/"
+# ]
+
+[window.padding]
+x = 15
+y = 15
+
+[colors.primary]
+background = "#050304"
+foreground = "#ffffff"
+
+[colors.cursor]
+text =   "#050304"
+cursor = "#e0564f"
+
+[colors.normal]
+black =   "#211818"
+red =     "#f0453f"
+green =   "#6ed897"
+yellow =  "#e0bd6e"
+blue =    "#5f9ce8"
+magenta = "#d36ad0"
+cyan =    "#5fd4cc"
+white =   "#ffffff"
+
+[colors.bright]
+black =   "#6b5457"
+red =     "#ff6a63"
+green =   "#9be8bd"
+yellow =  "#f5d892"
+blue =    "#8dbff5"
+magenta = "#e79ee4"
+cyan =    "#9beae4"
+white =   "#ffffff"
+
+[font]
+size = 18.0
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"

@@ -1,0 +1,8 @@
+FROM cgr.dev/chainguard/wolfi-base
+
+RUN apk add --no-cache bash curl nodejs npm pipewire wl-clipboard neovim
+RUN npm install -g opencode-ai --allow-scripts=opencode-ai
+RUN curl -fsSL https://herdr.dev/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+WORKDIR /work
+ENTRYPOINT ["herdr"]

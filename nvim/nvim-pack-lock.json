@@ -29,6 +29,10 @@
       "rev": "92fbaf895f83c59575ec599df532b297ebf62b14",
       "src": "https://github.com/echasnovski/mini.indentscope"
     },
+    "neovim": {
+      "rev": "ff483051a47e27d84bdef47703538df1ed9f4a47",
+      "src": "https://github.com/rose-pine/neovim"
+    },
     "nvim-autopairs": {
       "rev": "430522f95fe4fb7c511ec64f8c1a90cc6a66c05c",
       "src": "https://github.com/windwp/nvim-autopairs"
