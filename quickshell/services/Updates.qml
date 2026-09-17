@@ -1,0 +1,47 @@
+// Update service: counts pacman + brew updates and launches the upgrade.
+pragma Singleton
+
+import QtQuick
+import Quickshell
+import Quickshell.Io
+import qs
+
+Singleton {
+  id: updates
+
+  property int count: 0
+
+  Process {
+    id: poll
+    command: ["sh", "-c",
+      "p=$(checkupdates 2>/dev/null | wc -l); "
+      + "b=$(brew outdated 2>/dev/null | tail -n +2 | wc -l); "
+      + "echo $((p + b))"]
+    stdout: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: {
+        const n = parseInt(String(text).trim())
+        updates.count = isNaN(n) ? 0 : n
+      }
+    }
+  }
+
+  Timer {
+    interval: 1800000
+    running: true
+    repeat: true
+    triggeredOnStart: true
+    onTriggered: poll.running = true
+  }
+
+  Process {
+    id: upgrade
+    command: [Config.terminal, "--hold", "bash", "-ic",
+      "paru -Syu; brew update; brew upgrade; exec bash"]
+  }
+
+  function runUpgrade() {
+    upgrade.running = false
+    upgrade.running = true
+  }
+}

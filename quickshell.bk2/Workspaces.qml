@@ -20,5 +20,6 @@ Rectangle {
 
         font.pixelSize: 9
         font.bold: true
+        font.family: "JetBrains Mono Nerd"
     }
 }

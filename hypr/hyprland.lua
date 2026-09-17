@@ -46,13 +46,14 @@ end)
 hl.bind(mainMod.." + Return",hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod.." + B",hl.dsp.exec_cmd(browser))
 hl.bind(mainMod.." + E",hl.dsp.exec_cmd(files))
-hl.bind(mainMod.." + Space",hl.dsp.exec_cmd(launcher))
+hl.bind(mainMod.." + Space",hl.dsp.exec_cmd("qs ipc call launcher toggle"))
+hl.bind(mainMod.." + D",hl.dsp.exec_cmd(launcher))
 hl.bind(mainMod.." + SHIFT + M",hl.dsp.exit())
 hl.bind(mainMod.." + S",hl.dsp.exec_cmd(screenshot_region))
 hl.bind(mainMod.." + SHIFT + S",hl.dsp.exec_cmd(screenshot_full))
 hl.bind(mainMod.." + SHIFT + Escape",hl.dsp.exec_cmd("pidof hyprlock || /home/ajani/.config/hypr/lockwall.sh"))
 
-hl.bind(mainMod.." + CTRL + SHIFT + W",hl.dsp.exec_cmd([[p=$(find "$HOME/wallpapers" -type f \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | shuf -n1) && awww img --transition-fps 144 --transition-type random "$p"]]))
+hl.bind(mainMod.." + CTRL + SHIFT + W",hl.dsp.exec_cmd([[p=$(find "$HOME/wallpapers" -type f \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | shuf -n1) && awww img --transition-fps 144 --transition-type random "$p"; qs ipc call theme refresh]]))
 hl.bind(mainMod.." + SHIFT + W",hl.dsp.exec_cmd("qs ipc call wallpapers toggle"))
 hl.bind(mainMod.." + P",hl.dsp.exec_cmd("qs ipc call bar toggle"))
 hl.bind(mainMod.." + A",hl.dsp.exec_cmd("vicinae vicinae://launch/applications"))
@@ -126,6 +127,11 @@ hl.window_rule({ name="no-blur-others", match={ class=pattern }, no_blur=true })
 
 -- vicinae blur
 hl.layer_rule({ match = { namespace = "vicinae" }, name = "vicinae-blur", blur = true, ignore_alpha = 0, })
+
+-- quickshell surfaces
+-- hl.layer_rule({ match = { namespace = "qs-bar" }, name = "qs-bar-blur", blur = true, ignore_alpha = 0.2 })
+-- hl.layer_rule({ match = { namespace = "qs-wallpapers" }, name = "qs-wallpapers-blur", blur = true, ignore_alpha = 0.0 })
+hl.layer_rule({ match = { namespace = "qs-launcher" }, name = "qs-launcher-blur", blur = true, ignore_alpha = 0.35 })
 
 
 

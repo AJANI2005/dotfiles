@@ -1,63 +1,29 @@
 //@ pragma UseQApplication
-import Quickshell
+//@ pragma IconTheme Papirus-Dark
+// Composition root: bar on every screen, overlays on the focused screen.
+
 import QtQuick
+import Quickshell
+import Quickshell.Hyprland
+import qs
 
 ShellRoot {
-  id: r
+  id: shell
 
-  // Magic numbers
-  property int barHeight: 24
-  property int windowHeight: 200
-
-  // Wallpaper Switcher
-  WallpaperSwitcher{}
-
-  // Main Window
-  Variants {
-    model: Quickshell.screens
-
-    PanelWindow {
-      id: w
-      required property var modelData
-      screen: modelData
-
-      anchors { top: true; left: true; right: true; }
-      color: "transparent"
-      implicitHeight: r.windowHeight
-
-      exclusiveZone: r.barHeight
-
-      property Item activeItem: null
-
-      mask: Region { item: clickRegion }
-      Rectangle {
-        id: clickRegion
-        // color: "#22ffffff" 
-        color: "transparent"
-        x: activeItem?.x ?? 0
-        y: activeItem?.y ?? 0
-        width: activeItem?.width ??  w.screen.width
-        height: activeItem?.height ?? r.barHeight
-      }
-      
-
-      component HoverDetector : MouseArea { 
-          anchors.fill:parent; hoverEnabled: true;
-          onEntered: { parent.hovered = true; activeItem = parent }  
-          onExited: { parent.hovered = false; activeItem = null }
-      }
-
-
-      // Clock Pill
-      Clock {
-        id: clock
-        HoverDetector{}
-      }
-      Workspaces{ 
-        x: clock.x - width - 5; y: clock.y + 10 
-        HoverDetector{}
-      }
+  readonly property var focusedScreen: {
+    const name = Hyprland.focusedMonitor ? Hyprland.focusedMonitor.name : ""
+    const list = Quickshell.screens
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].name === name) return list[i]
     }
+    return list.length > 0 ? list[0] : null
   }
 
+  Variants {
+    model: Quickshell.screens
+    Bar { property var modelData; screen: modelData }
+  }
+
+  AppLauncher { screen: shell.focusedScreen }
+  WallpaperSwitcher { screen: shell.focusedScreen }
 }

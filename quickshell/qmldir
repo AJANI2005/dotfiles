@@ -1,0 +1,16 @@
+module qs
+singleton Apps 1.0 services/Apps.qml
+Bar 1.0 Bar.qml
+singleton BarState 1.0 services/BarState.qml
+singleton Config 1.0 services/Config.qml
+singleton Theme 1.0 services/Theme.qml
+singleton Updates 1.0 services/Updates.qml
+singleton Wallpapers 1.0 services/Wallpapers.qml
+singleton Workspaces 1.0 services/Workspaces.qml
+AppLauncher 1.0 AppLauncher.qml
+WallpaperSwitcher 1.0 WallpaperSwitcher.qml
+WorkspaceWidget 1.0 widgets/WorkspaceWidget.qml
+ClockWidget 1.0 widgets/ClockWidget.qml
+TrayWidget 1.0 widgets/TrayWidget.qml
+BatteryWidget 1.0 widgets/BatteryWidget.qml
+UpdateWidget 1.0 widgets/UpdateWidget.qml
