@@ -17,7 +17,7 @@ hl.config({
   input={ touchpad={ natural_scroll=true } },
   decoration={
     rounding=10, active_opacity=1.0, inactive_opacity=1.0, fullscreen_opacity=1.0,
-    blur={ enabled=true, size=3, passes=4, ignore_opacity=true, xray=true }
+    blur={ enabled=true, size=10, passes=2, xray=true }
   }
 })
 
