@@ -3,50 +3,65 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import qs
+import "widgets" 
 
 PanelWindow {
   id: bar
 
-  visible: BarState.visible
-  color: Theme.panel
   anchors { left: true; right: true; bottom: true }
-  implicitHeight: Theme.barHeight
+  implicitHeight: 32
+  color: "transparent"
   exclusionMode: ExclusionMode.Auto
   WlrLayershell.namespace: "qs-bar"
 
   Rectangle {
-    anchors { left: parent.left; right: parent.right; top: parent.top }
-    height: 1
-    color: Theme.border
+    anchors.fill: parent
+    color: "#141419"
   }
 
   RowLayout {
     anchors.fill: parent
-    anchors.leftMargin: Theme.pad
-    anchors.rightMargin: Theme.pad
-    spacing: Theme.gap
+    anchors.leftMargin: 10
+    anchors.rightMargin: 10
+    spacing: 6
 
-    RowLayout {
-      spacing: Theme.gap
-      WorkspaceWidget {}
+    Item {
+      Layout.fillWidth: true
+      Layout.fillHeight: true
+      Workspaces {
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+      }
+    }
+
+    Item {
+      Layout.fillHeight: true
+
+      Clock {
+        id: clock
+        anchors.centerIn: parent
+      }
+
+      Updates {
+        anchors.right: clock.left
+        anchors.rightMargin: 16
+        anchors.verticalCenter: clock.verticalCenter
+      }
+
+      Battery {
+        anchors.left: clock.right
+        anchors.leftMargin: 16
+        anchors.verticalCenter: clock.verticalCenter
+      }
     }
 
     Item {
       Layout.fillWidth: true
       Layout.fillHeight: true
-      RowLayout {
-        anchors.centerIn: parent
-        spacing: Theme.gap
-        ClockWidget {}
+      Tray {
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
       }
-    }
-
-    RowLayout {
-      spacing: Theme.gap
-      UpdateWidget {}
-      TrayWidget {}
-      BatteryWidget {}
     }
   }
 }

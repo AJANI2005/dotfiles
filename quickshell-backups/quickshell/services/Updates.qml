@@ -1,4 +1,4 @@
-// Update service: counts pacman + brew updates and launches the upgrade.
+// Update service: counts pacman + AUR + brew updates and launches the upgrade.
 pragma Singleton
 
 import QtQuick
@@ -13,7 +13,7 @@ Singleton {
 
   Process {
     id: poll
-    command: ["sh", "-c",
+    command: ["bash", "-lc",
       "p=$(pacman -Qu 2>/dev/null | wc -l); "
       + "a=$(paru -Qua 2>/dev/null | wc -l); "
       + "b=$(brew outdated -q 2>/dev/null | wc -l); "
@@ -39,10 +39,10 @@ Singleton {
     id: upgrade
     command: ["alacritty", "--hold", "-e", "bash", "-ic",
       "paru -Syu; brew update && brew upgrade; exec bash"]
+    running: false
   }
 
   function runUpgrade() {
-    upgrade.running = false
-    upgrade.running = true
+    upgrade.startDetached()
   }
 }
