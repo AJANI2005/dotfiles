@@ -19,12 +19,12 @@ Row {
       height: 20
       radius: 6
       anchors.verticalCenter: parent.verticalCenter
-      color: focused ? Theme.accent : (occupied ? Theme.raised : "transparent")
+      color: parent.focused ? "#ffffff" : "transparent"
 
       Text {
         anchors.centerIn: parent
         text: parent.wsId
-        color: parent.focused ? Theme.bg : (parent.occupied ? Theme.text : Theme.faint)
+        color: parent.focused ? "#ffffff" : (parent.occupied ? "#bbbbbb" : "#6b7280")
         font.family: Theme.font
         font.pixelSize: 11
         font.bold: parent.focused

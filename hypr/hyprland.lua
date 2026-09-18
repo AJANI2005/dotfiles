@@ -10,14 +10,14 @@ local mainMod="SUPER"
 
 hl.monitor({ output="eDP-1", mode="1920x1080@144", position="auto", scale="1" })
 hl.config({
-  general={ gaps_in=4, gaps_out=8, resize_on_border=true, border_size=2, col={ active_border="rgba(333333ee)", inactive_border="rgba(333333aa)" } },
+  general={ gaps_in=4, gaps_out=10, resize_on_border=true, border_size=2, col={ active_border="rgba(333333ee)", inactive_border="rgba(333333aa)" } },
   animations={ enabled=false },
   dwindle={ preserve_split=true },
   misc={ force_default_wallpaper=-1, disable_hyprland_logo=true, disable_splash_rendering=true },
   input={ touchpad={ natural_scroll=true } },
   decoration={
     rounding=10, active_opacity=1.0, inactive_opacity=1.0, fullscreen_opacity=1.0,
-    blur={ enabled=true, size=5, passes=3, ignore_opacity=true, xray=true }
+    blur={ enabled=true, size=3, passes=4, ignore_opacity=true, xray=true }
   }
 })
 
@@ -46,8 +46,8 @@ end)
 hl.bind(mainMod.." + Return",hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod.." + B",hl.dsp.exec_cmd(browser))
 hl.bind(mainMod.." + E",hl.dsp.exec_cmd(files))
-hl.bind(mainMod.." + Space",hl.dsp.exec_cmd("qs ipc call launcher toggle"))
-hl.bind(mainMod.." + D",hl.dsp.exec_cmd(launcher))
+hl.bind(mainMod.." + Space",hl.dsp.exec_cmd(launcher))
+hl.bind(mainMod.." + D",hl.dsp.exec_cmd("vicinae vicinae://launch/applications"))
 hl.bind(mainMod.." + SHIFT + M",hl.dsp.exit())
 hl.bind(mainMod.." + S",hl.dsp.exec_cmd(screenshot_region))
 hl.bind(mainMod.." + SHIFT + S",hl.dsp.exec_cmd(screenshot_full))
@@ -56,7 +56,6 @@ hl.bind(mainMod.." + SHIFT + Escape",hl.dsp.exec_cmd("pidof hyprlock || /home/aj
 hl.bind(mainMod.." + CTRL + SHIFT + W",hl.dsp.exec_cmd([[p=$(find "$HOME/wallpapers" -type f \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | shuf -n1) && awww img --transition-fps 144 --transition-type random "$p"; qs ipc call theme refresh]]))
 hl.bind(mainMod.." + SHIFT + W",hl.dsp.exec_cmd("qs ipc call wallpapers toggle"))
 hl.bind(mainMod.." + P",hl.dsp.exec_cmd("qs ipc call bar toggle"))
-hl.bind(mainMod.." + A",hl.dsp.exec_cmd("vicinae vicinae://launch/applications"))
 hl.bind(mainMod.." + C",hl.dsp.exec_cmd("vicinae vicinae://launch/clipboard/history"))
 
 -- Windows
@@ -131,7 +130,6 @@ hl.layer_rule({ match = { namespace = "vicinae" }, name = "vicinae-blur", blur =
 -- quickshell surfaces
 -- hl.layer_rule({ match = { namespace = "qs-bar" }, name = "qs-bar-blur", blur = true, ignore_alpha = 0.2 })
 -- hl.layer_rule({ match = { namespace = "qs-wallpapers" }, name = "qs-wallpapers-blur", blur = true, ignore_alpha = 0.0 })
-hl.layer_rule({ match = { namespace = "qs-launcher" }, name = "qs-launcher-blur", blur = true, ignore_alpha = 0.35 })
 
 
 

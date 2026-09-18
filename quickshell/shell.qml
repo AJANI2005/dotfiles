@@ -5,10 +5,18 @@
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Io
 import qs
 
 ShellRoot {
   id: shell
+
+  Component.onCompleted: Quickshell.watchFiles = true
+
+  IpcHandler {
+    target: "quickshell"
+    function reload(): void { Quickshell.reload(true) }
+  }
 
   readonly property var focusedScreen: {
     const name = Hyprland.focusedMonitor ? Hyprland.focusedMonitor.name : ""
@@ -24,6 +32,5 @@ ShellRoot {
     Bar { property var modelData; screen: modelData }
   }
 
-  AppLauncher { screen: shell.focusedScreen }
   WallpaperSwitcher { screen: shell.focusedScreen }
 }

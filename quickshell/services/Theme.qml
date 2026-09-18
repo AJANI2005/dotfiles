@@ -12,7 +12,7 @@ Singleton {
   // ---- predefined schemes (one for now; keys are valid `theme set` names) ----
   readonly property var fallback: ({
     bg: "#0b0b0f", surface: "#141419", raised: "#1c1c24", border: "#23232e",
-    panel: "#d1141419", text: "#e6e7f0", dim: "#9aa0b5", faint: "#565a6e",
+    panel: "#ff141419", text: "#e6e7f0", dim: "#9aa0b5", faint: "#565a6e",
     accent: "#7aa2f7", good: "#9ece6a", warn: "#e0af68", bad: "#f7768e"
   })
 
@@ -145,7 +145,7 @@ Singleton {
       surface: surface,
       raised: Qt.lighter(bg, 1.75),
       border: Qt.lighter(bg, 2.2),
-      panel: Qt.rgba(surface.r, surface.g, surface.b, 0.82),
+      panel: Qt.rgba(surface.r, surface.g, surface.b, 1),
       text: fg,
       dim: mix(fg, bg, 0.35),
       faint: mix(fg, bg, 0.72),

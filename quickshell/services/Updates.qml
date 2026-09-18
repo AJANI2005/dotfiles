@@ -14,9 +14,10 @@ Singleton {
   Process {
     id: poll
     command: ["sh", "-c",
-      "p=$(checkupdates 2>/dev/null | wc -l); "
-      + "b=$(brew outdated 2>/dev/null | tail -n +2 | wc -l); "
-      + "echo $((p + b))"]
+      "p=$(pacman -Qu 2>/dev/null | wc -l); "
+      + "a=$(paru -Qua 2>/dev/null | wc -l); "
+      + "b=$(brew outdated -q 2>/dev/null | wc -l); "
+      + "echo $((p + a + b))"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {
@@ -36,8 +37,8 @@ Singleton {
 
   Process {
     id: upgrade
-    command: [Config.terminal, "--hold", "bash", "-ic",
-      "paru -Syu; brew update; brew upgrade; exec bash"]
+    command: ["alacritty", "--hold", "-e", "bash", "-ic",
+      "paru -Syu; brew update && brew upgrade; exec bash"]
   }
 
   function runUpgrade() {

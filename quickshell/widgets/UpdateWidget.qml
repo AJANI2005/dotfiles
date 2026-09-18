@@ -2,28 +2,36 @@
 import QtQuick
 import qs
 
-Row {
+Item {
   id: root
-  spacing: 6
+  implicitWidth: row.implicitWidth
+  implicitHeight: row.implicitHeight
 
-  Text {
-    anchors.verticalCenter: parent.verticalCenter
-    text: "󰚰"
-    color: Updates.count > 0 ? Theme.accent : Theme.faint
-    font.family: Theme.font
-    font.pixelSize: 13
-  }
-
-  Text {
-    anchors.verticalCenter: parent.verticalCenter
-    text: Updates.count
-    color: Updates.count > 0 ? Theme.accent : Theme.dim
-    font.family: Theme.font
-    font.pixelSize: 12
-  }
-
-  TapHandler {
+  MouseArea {
+    anchors.fill: parent
     cursorShape: Qt.PointingHandCursor
-    onTapped: Updates.runUpgrade()
+    onClicked: Updates.runUpgrade()
+  }
+
+  Row {
+    id: row
+    spacing: 6
+    anchors.verticalCenter: parent.verticalCenter
+
+    Text {
+      anchors.verticalCenter: parent.verticalCenter
+      text: "󰚰"
+      color: Updates.count > 0 ? Theme.accent : Theme.faint
+      font.family: Theme.font
+      font.pixelSize: 13
+    }
+
+    Text {
+      anchors.verticalCenter: parent.verticalCenter
+      text: Updates.count
+      color: Updates.count > 0 ? Theme.accent : Theme.dim
+      font.family: Theme.font
+      font.pixelSize: 12
+    }
   }
 }
