@@ -9,7 +9,7 @@ PanelWindow {
   id: bar
 
   anchors { left: true; right: true; bottom: true }
-  implicitHeight: 32
+  implicitHeight: 20
   color: "transparent"
   exclusionMode: ExclusionMode.Auto
   WlrLayershell.namespace: "qs-bar"
