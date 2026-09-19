@@ -7,10 +7,7 @@ hl.env("XCURSOR_SIZE", "24")
 -- Settings
 hl.config({
     decoration = {
-        blur = {
-            size = 5,
-            xray = true,
-        },
+        blur = { enabled=false },
         shadow = {
             enabled = false,
         },
@@ -37,46 +34,15 @@ hl.config({
     },
 })
 
--- Animations
 hl.animation({
     leaf = "windows",
-    enabled = true,
-    speed = 3.0,
-    bezier = "default",
-})
-hl.animation({
-    leaf = "windowsIn",
-    enabled = true,
-    speed = 3.0,
-    bezier = "default",
-    style = "slide",
-})
-hl.animation({
-    leaf = "windowsOut",
-    enabled = true,
-    speed = 3.0,
-    bezier = "default",
-    style = "slide",
-})
-hl.animation({
-    leaf = "windowsMove",
-    enabled = true,
-    speed = 3.0,
-    bezier = "default",
-})
-hl.animation({
-    leaf = "layers",
-    enabled = true,
-    speed = 3.0,
-    bezier = "default",
-})
-hl.animation({
-    leaf = "fade",
-    enabled = true,
-    speed = 3.0,
-    bezier = "default",
+    enabled = false,
 })
 hl.animation({
     leaf = "workspaces",
+    enabled = false,
+})
+hl.animation({
+    leaf = "fade",
     enabled = false,
 })
