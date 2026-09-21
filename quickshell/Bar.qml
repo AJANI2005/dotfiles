@@ -16,7 +16,7 @@ PanelWindow {
 
   Rectangle {
     anchors.fill: parent
-    color: "#141419"
+    color: "#000"
   }
 
   RowLayout {

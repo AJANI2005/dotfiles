@@ -21,7 +21,7 @@ Item {
     anchors.centerIn: parent
     text: root.text
     font.family: "JetBrainsMono Nerd Font"
-    font.pixelSize: 14
+    font.pixelSize: 12
     font.bold: true
     color: "#e6e7f0"
   }

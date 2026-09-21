@@ -89,7 +89,6 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("awww-daemon")
   hl.exec_cmd("hypridle")
   hl.exec_cmd("mako")
-  hl.exec_cmd("hyprctl keyword layerrule blur, vicinae")
 end)
 
 hl.gesture({ fingers=3, direction="horizontal", action="workspace" })
@@ -100,8 +99,8 @@ hl.window_rule({ name="fix-xwayland-drags", match={ class="^$", title="^$", xway
 -- hl.window_rule({ name="floating-terminal", match={ class="^(Alacritty)$" }, float=true, size={1400,1000} })
 hl.window_rule({ name="floating-utilities", match={ class="^(thunar|mpv|blueman-manager|com.saivert.pwvucontrol)$" }, float=true, pin=true, size={800,600} })
 hl.window_rule({ name="picture-in-picture", match={ title="^(Picture-in-Picture)$" }, float=true, pin=true, size={400,400} })
--- vicinae blur
-hl.layer_rule({ match = { namespace = "vicinae" }, name = "vicinae-blur", blur = true, ignore_alpha = 0, })
+-- vicinae blur (disabled for performance; launcher is opaque)
+-- hl.layer_rule({ match = { namespace = "vicinae" }, name = "vicinae-blur", blur = true, ignore_alpha = 0, })
 
 -- Hypr GUI
 require("hyprland-gui")

@@ -64,9 +64,8 @@ Item {
     const img = []
     const seen = {}
     for (const line of lines) {
-      const name = line.split("/").pop()
-      if (seen[name]) continue
-      seen[name] = true
+      if (seen[line]) continue
+      seen[line] = true
       const slash = line.lastIndexOf("/")
       img.push({ filePath: line, dir: slash > 0 ? line.substring(0, slash) : "/" })
     }
@@ -98,12 +97,12 @@ Item {
     root.currentDirIndex = (root.currentDirIndex + delta + n) % n
     root.refold()
     root.selectedIndex = 0
+    root.updateFolderText()
   }
 
   function updateFolderText() {
-    root.folderText = root.folders.length
-      ? String(root.folders[root.currentDirIndex]).replace(Quickshell.env("HOME"), "~")
-      : ""
+    const f = root.folders.length ? String(root.folders[root.currentDirIndex]) : ""
+    root.folderText = f ? f.substring(f.lastIndexOf("/") + 1) : ""
   }
 
   function step(delta) {
@@ -319,7 +318,7 @@ Item {
                 ShapePath {
                   fillColor: "transparent"
                   strokeColor: cell.selected ? "#7aa2f7" : "#565a6e"
-                  strokeWidth: cell.selected ? 3 : 2
+                  strokeWidth: cell.selected ? 6 : 2
                   startX: cell.topLeft; startY: 0
                   PathLine { x: cell.topRight; y: 0 }
                   PathLine { x: cell.bottomRight; y: cell.height }

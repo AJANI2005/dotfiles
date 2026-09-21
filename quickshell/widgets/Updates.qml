@@ -13,7 +13,6 @@ Item {
     id: poll
     command: ["bash", "-c", "paru -Qu 2>/dev/null | wc -l"]
     stdout: StdioCollector {
-      waitForEnd: true
       onStreamFinished: {
         const n = parseInt(String(text).trim())
         root.count = isNaN(n) ? 0 : n
@@ -29,16 +28,25 @@ Item {
     onTriggered: poll.running = true
   }
 
+  function refresh() {
+    poll.running = false
+    poll.running = true
+  }
+
   Process {
     id: upgrade
     command: ["alacritty","--hold", "-e", "paru", "-Syu"]
     running: false
+    onExited: root.refresh()
   }
 
   MouseArea {
     anchors.fill: parent
     cursorShape: Qt.PointingHandCursor
-    onClicked: upgrade.startDetached()
+    onClicked: {
+      root.refresh()
+      upgrade.startDetached()
+    }
   }
 
   Text {
