@@ -17,9 +17,9 @@ hl.bind(mainMod.." + S",hl.dsp.exec_cmd(screenshot_region))
 hl.bind(mainMod.." + SHIFT + S",hl.dsp.exec_cmd(screenshot_full))
 hl.bind(mainMod.." + SHIFT + Escape",hl.dsp.exec_cmd(" /home/ajani/.config/hypr/lockwall.sh"))
 hl.bind(mainMod.." + CTRL + SHIFT + W",hl.dsp.exec_cmd([[p=$(find "$HOME/wallpapers" -type f \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | shuf -n1) && awww img --transition-fps 144 --transition-type random "$p"; qs ipc call theme refresh]]))
-hl.bind(mainMod.." + SHIFT + W",hl.dsp.exec_cmd("qs ipc call wallpapers toggle"))
-hl.bind(mainMod.." + P",hl.dsp.exec_cmd("qs ipc call bar toggle"))
+hl.bind(mainMod.." + SHIFT + W",hl.dsp.exec_cmd("qs ipc call wallpaper toggle"))
 hl.bind(mainMod.." + C",hl.dsp.exec_cmd("vicinae vicinae://launch/clipboard/history"))
+hl.bind(mainMod.." + P",hl.dsp.exec_cmd("qs ipc call bar toggle"))
 
 
 -- Keybinds
@@ -85,7 +85,7 @@ hl.env("XCURSOR_SIZE","24")
 -- Autostart
 hl.on("hyprland.start", function()
   hl.exec_cmd("vicinae server")
-  hl.exec_cmd("quickshell")
+  hl.exec_cmd("qs")
   hl.exec_cmd("awww-daemon")
   hl.exec_cmd("hypridle")
   hl.exec_cmd("mako")
@@ -104,3 +104,4 @@ hl.window_rule({ name="picture-in-picture", match={ title="^(Picture-in-Picture)
 
 -- Hypr GUI
 require("hyprland-gui")
+

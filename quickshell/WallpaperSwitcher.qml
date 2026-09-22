@@ -26,7 +26,7 @@ Item {
   readonly property int skewOffset: 28
 
   IpcHandler {
-    target: "wallpapers"
+    target: "wallpaper"
     function toggle(): void { root.open = !root.open }
   }
 
@@ -318,7 +318,7 @@ Item {
                 ShapePath {
                   fillColor: "transparent"
                   strokeColor: cell.selected ? "#7aa2f7" : "#565a6e"
-                  strokeWidth: cell.selected ? 6 : 2
+                  strokeWidth: cell.selected ? 2 : 1
                   startX: cell.topLeft; startY: 0
                   PathLine { x: cell.topRight; y: 0 }
                   PathLine { x: cell.bottomRight; y: cell.height }

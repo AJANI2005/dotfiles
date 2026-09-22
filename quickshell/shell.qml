@@ -1,14 +1,14 @@
 //@ pragma UseQApplication
-//@ pragma IconTheme Papirus-Dark
+//@ pragma DefaultEnv QT_QPA_PLATFORMTHEME=gtk3
+//@ pragma Env QS_NO_RELOAD_POPUP=1
+//@ pragma Env QSG_RENDER_LOOP=threaded
+//@ pragma Env QT_QUICK_FLICKABLE_WHEEL_DECELERATION=10000
 
-import QtQuick
 import Quickshell
-import "widgets"
-import qs
+import QtQuick
+import "bar"
 
-ShellRoot {
-  id: shell
-
+Scope {
   Bar {}
   WallpaperSwitcher {}
 }
