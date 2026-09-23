@@ -1,0 +1,30 @@
+[bar]
+order = ["default"]
+
+[bar.default]
+enabled = true
+position = "top"
+layer = "top"
+auto_hide = false
+smart_auto_hide = false
+reserve_space = true
+
+thickness = 16
+background_opacity = 1.0
+border_width = 0
+shadow = false
+radius = 0
+margin_ends = 0
+margin_edge = 0
+
+padding = 10
+widget_spacing = 8
+scale = 1.0
+font_scale = 0.95
+font_weight = 500
+hover_highlight = true
+capsule = false
+
+start = ["launcher", "workspaces"]
+center = ["clock"]
+end = ["media", "tray", "network", "volume", "brightness", "battery", "notifications", "control-center"]

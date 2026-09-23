@@ -1,5 +1,5 @@
 local terminal="alacritty"
-local browser="/home/ajani/apps/zen/zen --new-tab"
+local browser="zen-browser"
 local files="thunar"
 local launcher="vicinae toggle"
 local screenshot_region="grim -g \"$(slurp)\" - | swappy -f -"
@@ -20,7 +20,7 @@ hl.bind(mainMod.." + CTRL + SHIFT + W",hl.dsp.exec_cmd([[p=$(find "$HOME/wallpap
 hl.bind(mainMod.." + SHIFT + W",hl.dsp.exec_cmd("qs ipc call wallpaper toggle"))
 hl.bind(mainMod.." + C",hl.dsp.exec_cmd("vicinae vicinae://launch/clipboard/history"))
 hl.bind(mainMod.." + P",hl.dsp.exec_cmd("qs ipc call bar toggle"))
-
+hl.bind(mainMod.." + SHIFT + C",hl.dsp.exec_cmd("zen-browser --blank-window https://www.chatgpt.com"))
 
 -- Keybinds
 hl.bind("SUPER + Q", hl.dsp.window.close())
@@ -104,4 +104,5 @@ hl.window_rule({ name="picture-in-picture", match={ title="^(Picture-in-Picture)
 
 -- Hypr GUI
 require("hyprland-gui")
+require("noctalia")
 

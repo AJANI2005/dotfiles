@@ -260,6 +260,7 @@ Scope {
 
         // Center section: Window Title (truly centered in bar)
         Item {
+          visible: false
           anchors.centerIn: parent
           height: parent.height
           width: Math.max(0, parent.width - 2 * Math.max(leftSection.width, rightSection.width) - 32)

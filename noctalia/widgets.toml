@@ -1,0 +1,34 @@
+[widget.launcher]
+glyph = "search"
+
+[widget.workspaces]
+style = "regular"
+show_labels = true
+hide_when_empty = false
+
+[widget.clock]
+format = "{:%H:%M}"
+
+[widget.media]
+album_art_only = true
+hide_when_no_media = true
+
+[widget.tray]
+hide_passive = true
+
+[widget.network]
+show_label = false
+vpn_status = "hidden"
+
+[widget.volume]
+show_label = false
+
+[widget.brightness]
+show_label = false
+
+[widget.battery]
+display_mode = "glyph"
+show_label = false
+
+[widget.notifications]
+hide_when_no_unread = true

@@ -4,6 +4,7 @@
 -- Settings
 hl.config({
   decoration = {
+    rounding = 10,
     blur = { enabled=false },
     shadow = {
       enabled = false,

@@ -16,6 +16,7 @@ Singleton {
     running: true
 
     stdout: StdioCollector {
+      
       onStreamFinished: {
         const value = parseInt(text.trim());
         root.updatesCount = isNaN(value) ? 0 : value;
@@ -34,6 +35,12 @@ Singleton {
     stderr: StdioCollector {}
     onExited: (exitCode, exitStatus) => root.refresh()
   }
+  Timer {
+    interval: 300000
+    running: true
+    repeat: true
+    onTriggered: { refresh(); }
+  }
 
   function update() {
     updateProc.running = false;
@@ -45,4 +52,5 @@ Singleton {
     checkProc.running = false;
     checkProc.running = true;
   }
+  Component.onCompleted: { refresh(); }
 }

@@ -1,0 +1,7 @@
+[shell]
+telemetry_enabled = false
+polkit_agent = false
+clipboard_enabled = true
+font_family = "JetBrainsMono Nerd Font"
+time_format = "{:%H:%M}"
+date_format = "%A, %d %b"
